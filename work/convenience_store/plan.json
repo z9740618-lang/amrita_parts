@@ -220,7 +220,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/hair_back.png",
-    "sha256": "e05088f763a2251edb146b4f312dfc03099468ba0acafc8aba6b44eff5e1f635"
+    "sha256": "3da3eba0b776939394607b7e53dd88f7758686918d316dfefe0f40f5f4cfa333"
    }
   },
   {
@@ -263,7 +263,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/hair_ribbon_l.png",
-    "sha256": "d6c3a40c7253d588c9ae46e7751c0d4f71008a7c20f0a3fa619787201cb205eb"
+    "sha256": "2fca71eb377be6a1457b0ba9f9abcb947438770318e181caebadeee7686830a9"
    }
   },
   {
@@ -329,7 +329,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "shared/face/ear_r.png",
-    "sha256": "c572c839f72fc4a33d3b4e76b5dc9a64352f32b7258ba41b6782e56f0b0f24db"
+    "sha256": "8a47ca8ff25db314f9826684a73dd5ee7eb7297fd754e6e2ad4b3ece69d891a6"
    }
   },
   {
@@ -350,7 +350,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "shared/face/ear_l.png",
-    "sha256": "5eab0a4f6193e42b6ac3d0819a964b75610dc81ba9708b5827a25f0d0c098d72"
+    "sha256": "06566ba1dacbe1b387f96bffb761cfe65d73e99af0ac8d0a5468bb3444c3c011"
    }
   },
   {
@@ -373,7 +373,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "shared/face/face.png",
-    "sha256": "4b0eb4ab38b84e5c4b51f16cbac5ceea957c46a58aed405e8731740641b7136f"
+    "sha256": "92b73a88d5ae148c885d3c63f8985f3f9cfe698b887d76b49c3dbabd59b85c46"
    }
   },
   {
@@ -633,7 +633,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/eyelash_lower_r.png",
-    "sha256": "835ae9b5aee33abb04f0b261b699c4fb2532b3531473c09beb6b8b7639f11bd9"
+    "sha256": "2f80dbd5f5bdeedfc586e77686014511fdbce2f9901120ded1fbb43e497ba01c"
    }
   },
   {
@@ -655,7 +655,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/eyelash_lower_l.png",
-    "sha256": "1e5867fb6d736e3bb3c4041231f3093fca0ecdac396b9e442f311d4d6c0ce997"
+    "sha256": "94a857502602307bb670c6de5515d62910fbe3aa0714e38956a6074c393286a5"
    }
   },
   {
@@ -677,7 +677,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/eyelash_upper_r.png",
-    "sha256": "6b1556db25416b4cc7149ecc37c70e24cdfa1b34024c9e9cc664c751e0eb3e1d"
+    "sha256": "c2df4c59a3935275d7b01db11e371d649af64a3bb9ce95b0610d409715c9f180"
    }
   },
   {
@@ -699,7 +699,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/eyelash_upper_l.png",
-    "sha256": "822ecf4887333b17495ee444836cf65deae39e9c5e75872586bb57686cc85817"
+    "sha256": "4a36e047421b22a9374216560798ce11cf47deb7c19bb97406b2a09baa0b67cc"
    }
   },
   {
@@ -765,7 +765,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/hair_side_r.png",
-    "sha256": "b17469264a40cfc22b8802f2cc510bddcf98b4169359f124481411f6eeed197b"
+    "sha256": "036d8ada1f2634da87714a4ba5eb0788f7f5daae49391b7b04fb4e9e7bbaf2a4"
    }
   },
   {
@@ -787,7 +787,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/hair_side_l.png",
-    "sha256": "b3d6a33d68007fb5909b5df71e2feb365a18e316bec64051f7eadfee1ddbedfa"
+    "sha256": "85d055f3d84604f49a28bf8682d971b07d979bb1aa4404a9073118043e8736f9"
    }
   },
   {
@@ -809,7 +809,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/hair_front.png",
-    "sha256": "563f48500592fe8c7e8328ebd7ae3fa6dde56b979a30a3bcb79b32e3c9f14db3"
+    "sha256": "ef4c14283cd3b846eae802b5bd394b1bc72c6c748c727a07f1c2abb506009cc0"
    }
   },
   {
@@ -871,7 +871,7 @@
    "status": "planned",
    "allow_mask": {
     "path": "work/convenience_store/masks/fill_face.png",
-    "sha256": "a5b3799baf9f37ff5472c06736bb551d8d4a05104ca8d3971d5445fe56d79301"
+    "sha256": "ab6cbb1bcdade9e9bf8389301893b976b9ce3c19dfc9ca1ec1cd429698c35ca5"
    },
    "protect_mask": {
     "path": null,
@@ -897,7 +897,7 @@
    "status": "planned",
    "allow_mask": {
     "path": "work/convenience_store/masks/fill_face.png",
-    "sha256": "a5b3799baf9f37ff5472c06736bb551d8d4a05104ca8d3971d5445fe56d79301"
+    "sha256": "ab6cbb1bcdade9e9bf8389301893b976b9ce3c19dfc9ca1ec1cd429698c35ca5"
    },
    "protect_mask": {
     "path": null,
@@ -1001,7 +1001,7 @@
    "status": "planned",
    "allow_mask": {
     "path": "work/convenience_store/masks/fill_hair_back.png",
-    "sha256": "d8e17d0b78bf91a1e3093e36c4b24e3c87fae783587bb7207aeff325f0226f80"
+    "sha256": "63c17179ad4d6dd8dfb1eed7263ca0f4c3ce09e4e2ea902b12968712d6a0eac1"
    },
    "protect_mask": {
     "path": null,
@@ -1072,11 +1072,11 @@
    "evidence": [
     {
      "path": "qa/convenience_store/recomposite_stats.json",
-     "sha256": "6d76252c132e44d210925c8ffae6a6da44c6a434458b5a3d5c1e0ea2e3311417"
+     "sha256": "9329a69f782c22edf38075f9a97c1f4c7ee056d795787748e3c17cd9926992a6"
     },
     {
      "path": "qa/convenience_store/recomposite_diff_x5.png",
-     "sha256": "52ce54ed41276a8fadcf0f5e913dd31ae9408c14ad88a908889df0f76da81adf"
+     "sha256": "f61337608a1a99cb7efe0261cb0f7e49d835f9e6d8771c3a69672920177ff95d"
     }
    ]
   },

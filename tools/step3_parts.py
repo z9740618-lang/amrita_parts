@@ -249,6 +249,9 @@ yy_ = np.arange(H)[:, None]
 hb_hole = (PM['head_back'] | erode(PM['bun'], 15) | PM['hair_front'] | ((PM['side_r'] & (yy_ < 2320)) | (PM['side_l'] & (yy_ < 2260)))) & ~hb_vis
 hb_hole &= covered_by_upper('hair_back')
 hb_hole &= ~L('neck')                      # never behind the neck: it would peek over the collar on tilt
+# the fill ends a few px under the shoulder/collar line: anything deeper under the body would rotate
+# out above the shoulders when the head tilts
+hb_hole &= ~erode(PM['body_zone'], 4)
 hb_src = hb_vis & (v > 0.8) & (s < 0.2) & (((h >= 200) & (h <= 290)) | (s < 0.06))
 fill_into(layers['hair_back'], hb_hole, hb_src, iters=150, aniso=(1.0, 0.12))
 fills['hair_back'] = hb_hole
@@ -299,7 +302,8 @@ fills['body'] = hole
 # (composited over the body they still reproduce the art exactly)
 bz = PM['body_zone'] & covered_by_upper('body') | PM['body_zone']
 for n in ('hair_side_r', 'hair_side_l'):
-    m = L(n) & PM['body_zone']
+    # only where the uniform underneath is solid (opaque art and opaque body layer)
+    m = L(n) & PM['body_zone'] & (base_alpha >= 250) & (layers['body'][..., 3] >= 250)
     Pp = c[..., :3].astype(np.float64)
     Bg = layers['body'][..., :3].astype(np.float64)
     ys_, xs_ = np.nonzero(m)

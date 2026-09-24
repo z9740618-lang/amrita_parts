@@ -241,6 +241,19 @@ claim(PM['ribbon'] & ~(lavender & (s < 0.2) & (v > 0.75)) & ~white, 'hair_ribbon
 claim(PM['bun'], 'hair_bun_l')
 claim(fz & jawmap & (skin | brown), 'face')
 claim(alpha, 'hair_back')
+# stray foreign pixels left in the back hair: ribbon edge (teal) and ear outline (skin/brown)
+hb = lab == ID['hair_back']
+rib = hb & teal & dilate(lab == ID['hair_ribbon_l'], 6)
+lab[rib] = ID['hair_ribbon_l']
+for e in ('ear_r', 'ear_l'):
+    ear = hb & (skin | brown | pinkish) & dilate(lab == ID[e], 6)
+    lab[ear] = ID[e]
+# skin (and its brown outline) seen between strands at the jaw/temple belongs to the face
+yy_ = np.arange(H)[:, None]
+near_face = dilate(PM['face_zone'], 60) | (PM['side_r'] | PM['side_l']); near_face &= (yy_ > 1250) & (yy_ < 1800)
+sk = (lab == ID['hair_back']) & near_face & (skin | brown | (pinkish & (s > 0.15)))
+lab[sk] = ID['face']
+print('hair_back skin -> face:', int(sk.sum()))
 
 Image.fromarray(lab).save(WORK / 'stage/labels.png')
 (WORK / 'stage/labels.json').write_text(json.dumps({'parts': PARTS, 'jaw': jaw.tolist()}, indent=0))

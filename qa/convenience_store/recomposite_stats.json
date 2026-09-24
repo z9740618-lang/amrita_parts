@@ -1,8 +1,8 @@
 {
- "max_abs_diff_on_grey": 126.49411764705883,
- "mean_abs_diff_on_grey": 0.1328852399667626,
- "px_diff_gt_8": 8350,
- "px_diff_gt_24": 6656,
- "px_diff_gt_48": 5964,
- "alpha_max_abs_diff": 252.0
+ "max_abs_diff_on_grey": 106.99607843137255,
+ "mean_abs_diff_on_grey": 0.0923129533304466,
+ "px_diff_gt_8": 1476,
+ "px_diff_gt_24": 31,
+ "px_diff_gt_48": 7,
+ "alpha_max_abs_diff": 4.999876970396002
 }
