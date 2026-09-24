@@ -677,7 +677,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/eyelash_upper_r.png",
-    "sha256": "14acdd7e648c02e788b15cf8e647e6900f221ac167e724508cd6b50a9aa346bd"
+    "sha256": "983351cdd6853b005527c9048904511fdb0dd4d915017658bed7074ebde97b98"
    }
   },
   {
@@ -699,7 +699,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/eyelash_upper_l.png",
-    "sha256": "3c8c64da9ec4c8e8ab1c7c016b0d36efcaa5569abaa57a9913d809a9e0ffafc9"
+    "sha256": "41ac0e7f9eecee3898ef4494e2f22d49daf4f50c3492145e76db3433a52ab391"
    }
   },
   {
@@ -809,7 +809,7 @@
    "boundary_notes": [],
    "raster": {
     "path": "costumes/convenience_store/hair_front.png",
-    "sha256": "fc92c3dd83dbb1a9d6549367fb823fc3696579e9bf838b782698ba9ab22d2bcd"
+    "sha256": "2acd1f8c0ffbff3d1fb9d60e5364fc69e52e83839861dd24ab3a4675af9c5c0c"
    }
   },
   {
@@ -1086,11 +1086,11 @@
    "evidence": [
     {
      "path": "qa/convenience_store/parts_contact_sheet.png",
-     "sha256": "c3bf46f6b3eebe4e795e23f91e1a9555c76d3f2faa057e1d230b5e0842257fbc"
+     "sha256": "4f3ef6efc2e800aaabcf8d1afebf592ae781973c2a856e24801cf0f8b8f71be4"
     },
     {
      "path": "qa/convenience_store/poses_overview.png",
-     "sha256": "3b5f6631e7dd434f0a6276153a377d34e6207732b8e4ebe2fd55c4dc21c13c21"
+     "sha256": "3c501420df25c7f4d5d3951f317c745cd7282ca0ca3575e518160c39b78ea009"
     }
    ]
   },
@@ -1100,7 +1100,7 @@
    "evidence": [
     {
      "path": "qa/convenience_store/pose_03_hair_swing_face.png",
-     "sha256": "d3576512e0b2ef8f9dacd5caa2a1d2a1386699743c3a3ad6bb8e4bc0c07c51ea"
+     "sha256": "684223bbef4763a07a0b90704b50bc85aa477237273acee664beecc8daffb377"
     },
     {
      "path": "qa/convenience_store/pose_05_head_shift_vs_body.png",

@@ -91,6 +91,11 @@ for side, hair_zone in (('r', lambda xx: xx < 1497), ('l', lambda xx: xx > 2310)
     claim(iris, f'iris_{side}')
     claim(lower & ~iris, f'eyelash_lower_{side}')
     claim(lash & ~lower, f'eyelash_upper_{side}')
+    # highlights/sheen drawn inside the lash stroke are part of the lash, not the hair
+    sheen = fill_holes(lash) & E & ~lash & ~iris & ~O & ~skin
+    n_sheen = int((sheen & free).sum())
+    claim(sheen, f'eyelash_upper_{side}')
+    print(f'lash sheen {side}:', n_sheen)
     claim(O, f'eye_white_{side}')
 
 # ---- 2. hair in front of the face -------------------------------------------------
