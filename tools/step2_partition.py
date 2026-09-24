@@ -5,7 +5,7 @@ import sys, json
 import numpy as np
 sys.path.insert(0, __file__.rsplit('/', 1)[0])
 from common import load, save, poly_mask, load_polys, hsv, ROOT
-from fill import dilate, erode
+from fill import dilate, erode, harmonic
 from PIL import Image
 
 WORK = ROOT / 'work/convenience_store'
@@ -58,6 +58,22 @@ def fill_holes(m):
     out[y0:y1, x0:x1] = ~bg
     return out
 
+def reconstruct(seed, mask, box):
+    """Geodesic reconstruction: parts of `mask` 8-connected to `seed`, inside crop box."""
+    y0, y1, x0, x1 = box
+    sm, mm = (seed & mask)[y0:y1, x0:x1], mask[y0:y1, x0:x1]
+    cur = sm.copy()
+    while True:
+        nxt = dilate(cur, 1) & mm
+        if (nxt == cur).all():
+            break
+        cur = nxt
+    out = np.zeros_like(mask)
+    out[y0:y1, x0:x1] = cur
+    return out
+
+
+
 # ---- 1. eyes -------------------------------------------------------------------
 for side, hair_zone in (('r', lambda xx: xx < 1497), ('l', lambda xx: xx > 2310)):
     E, O = PM[f'eye_{side}_E'], PM[f'eye_{side}_O']
@@ -86,7 +102,21 @@ for side, hair_zone in (('r', lambda xx: xx < 1497), ('l', lambda xx: xx > 2310)
         col = ys[xs_ == x]
         mid[x] = (col.min() + col.max()) / 2
     yy = np.arange(H)[:, None].repeat(W, 1)
-    midmap = mid[None, :].repeat(H, 0)
+    # beyond the corners of the opening, continue the lower lid line (the O bottom edge) so the
+    # corner wedge is split diagonally, not by a vertical cut at the opening's end
+    bot = np.full(W, -1.0)
+    for x in np.unique(xs_):
+        bot[x] = ys[xs_ == x].max()
+    ox0, ox1 = xs_.min(), xs_.max()
+    Ex = np.nonzero(E.any(0))[0]
+    for (xa, sgn) in ((ox0, 1), (ox1, -1)):
+        xb = xa + sgn * 14
+        slope = (bot[xb] - bot[xa]) / (xb - xa)
+        rng = range(Ex.min(), xa) if sgn == 1 else range(xa + 1, Ex.max() + 1)
+        for x in rng:
+            bot[x] = bot[xa] + slope * (x - xa)
+            mid[x] = bot[x] - 6
+    midmap = np.maximum(mid, np.where(bot >= 0, bot - 8, -1))[None, :].repeat(H, 0)
     lower = lash & (midmap >= 0) & (yy > midmap)
     claim(iris, f'iris_{side}')
     claim(lower & ~iris, f'eyelash_lower_{side}')
@@ -100,18 +130,88 @@ for side, hair_zone in (('r', lambda xx: xx < 1497), ('l', lambda xx: xx > 2310)
 
 # ---- 2. hair in front of the face -------------------------------------------------
 claim(PM['hair_front'] & ~skin & ~brown, 'hair_front')
+# inside the eye outlines the front hair keeps only real strand tips (connected to hair outside
+# the eyes); loose rim/highlight pixels of the eye drawing go back to the lashes
+for side in ('r', 'l'):
+    Ez = dilate(PM[f'eye_{side}_E'], 4)
+    hf = lab == ID['hair_front']
+    ys_, xs_ = np.nonzero(Ez)
+    box = (ys_.min() - 30, ys_.max() + 30, xs_.min() - 30, xs_.max() + 30)
+    keep = reconstruct(hf & ~Ez, hf, box) if 'reconstruct' in globals() else hf
+    loose = hf & Ez & ~keep
+    ysO = np.nonzero(PM[f'eye_{side}_O'])[0]
+    below = np.arange(H)[:, None] > (ysO.min() + ysO.max()) / 2
+    lab[loose & ~below] = ID[f'eyelash_upper_{side}']
+    lab[loose & below] = ID[f'eyelash_lower_{side}']
+    print(f'hair_front loose rim -> lashes {side}:', int(loose.sum()))
 bodyz = PM['body_zone']
-hairlike_body = lavender | navy | (white & PM['strand_core_r'])
-hairlike_free = ~skin & ~brown
+pinkish = ((h >= 290) | (h <= 50)) & (s > 0.08) & (v > 0.4)       # face-contour anti-aliasing
+hairlike_free = ~skin & ~brown & ~pinkish
+
+
+lav_line = (h >= 215) & (h <= 290) & (s > 0.12) & (v > 0.4)
+teal_light = teal & (s < 0.36) & (v > 0.75)           # translucent hair over the teal panel
+not_uniform = ~ublack & (~teal | teal_light)
 for side in ('r', 'l'):
     Pm = PM[f'side_{side}']
-    claim(Pm & ~bodyz & hairlike_free, f'hair_side_{side}')
-    # over the black uniform (image right) white highlights are unambiguously hair;
-    # over the white shirt (image left) only the traced strand core may take whites
-    hb = hairlike_body if side == 'r' else (hairlike_free & ~white) | white
-    claim(Pm & bodyz & hb & ~teal & ~ublack, f'hair_side_{side}')
-    # translucent strands over the teal panel: pale, desaturated teal = hair over teal
-    claim(Pm & bodyz & teal & (v > 0.82) & (s < 0.42) & dilate(lab == ID[f'hair_side_{side}'], 2), f'hair_side_{side}')
+    # the shoulder outline sits a few px above the traced body line: keep uniform colours out
+    shoulder_edge = dilate(bodyz, 8) & ~bodyz & (ublack | (teal & ~teal_light) | (v < 0.5))
+    up = Pm & ~bodyz & hairlike_free & ~shoulder_edge
+    claim(up, f'hair_side_{side}')
+    if side == 'r':
+        # over the white shirt: everything inside the traced strand outline except uniform colours
+        shirt = PM['shirt_hair_r'] & bodyz
+        # outside the traced outline hair only crosses the teal panel (the shirt there is never hair)
+        tz = Pm & bodyz & ~PM['shirt_hair_r'] & PM['teal_side_r']
+        cand = (shirt & not_uniform) | (tz & not_uniform & ((v > 0.62) | lav_line))
+        box = (2040, 2900, 1080, 1660)
+    else:
+        area = PM['side_l_body'] & bodyz & ~PM['collar_white_l'] & ~PM['nametag']
+        cand = area & ~(teal & ~teal_light) & ((v > 0.52) | (((b - r) > 45) & (v > 0.33)))
+        box = (2030, 2680, 2090, 2490)
+    seed = dilate(lab == ID[f'hair_side_{side}'], 2)
+    conn = reconstruct(seed, cand, box)
+    claim(conn, f'hair_side_{side}')
+    # translucent strands over the uniform: anything lighter or bluer than the smooth panel colour
+    # underneath (estimated from clearly-uniform pixels) and connected to the lock is hair
+    y0, y1, x0, x1 = box
+    reg = (Pm | PM['side_l_body'] if side == 'l' else Pm | PM['teal_side_r']) & bodyz
+    reg &= ~PM['nametag'] & ~PM['collar_white_l']
+    sub = a[y0:y1, x0:x1, :3].astype(np.float64)
+    q = b - (r + g) / 2                                # blueness: hair outlines are navy
+    pure_black = (v < 0.47) & (q < 28) & (v > 0.18)
+    pure_teal = teal & ~teal_light & (v > 0.55)
+    pure = (pure_black | pure_teal | (white & ~PM['shirt_hair_r'])) & free & ~dilate(lab == ID[f'hair_side_{side}'], 4)
+    pure = pure[y0:y1, x0:x1]
+    est = harmonic(sub, ~pure, iters=120)
+    d_l = sub.mean(-1) - est.mean(-1)
+    d_q = (sub[..., 2] - (sub[..., 0] + sub[..., 1]) / 2) - (est[..., 2] - (est[..., 0] + est[..., 1]) / 2)
+    darker = d_l < -14
+    thin = darker & ~dilate(erode(darker, 2), 3)      # strand outlines are 1-4 px wide
+    dev = np.zeros((H, W), bool)
+    dev[y0:y1, x0:x1] = (d_l > 10) | (d_q > 8)
+    cand2 = reg & free & dev
+    conn2 = reconstruct(dilate(lab == ID[f'hair_side_{side}'], 2), cand2 | (lab == ID[f'hair_side_{side}']), box)
+    claim(conn2 & cand2, f'hair_side_{side}')
+    # anti-aliased outline fringe of the strands (1-3 px) that still differs from the panel colour
+    hl = lab == ID[f'hair_side_{side}']
+    diff = np.zeros((H, W))
+    diff[y0:y1, x0:x1] = np.abs(sub - est).max(-1)
+    for _ in range(3):
+        ring = dilate(hl, 1) & reg & free & (diff > 6)
+        claim(ring, f'hair_side_{side}')
+        hl |= ring
+
+# ---- 2b. pale rim of the eye drawing (white highlight along the lash edges) that is not hair
+for side in ('r', 'l'):
+    E = PM[f'eye_{side}_E']
+    O = PM[f'eye_{side}_O']
+    whitish = (s < 0.07) & (v > 0.86)
+    rim = E & ~O & whitish & free
+    ysO = np.nonzero(O)[0]
+    below = np.arange(H)[:, None] > (ysO.min() + ysO.max()) / 2
+    claim(rim & ~below, f'eyelash_upper_{side}')
+    claim(rim & below, f'eyelash_lower_{side}')
 
 # ---- 3. ears, face, neck -------------------------------------------------------------
 claim(PM['ear_r'] & (skin | brown), 'ear_r')
@@ -136,7 +236,7 @@ claim(fz & (skin | brown) & jawmap, 'face')
 claim(PM['neck_zone'] & (skin | brown) & ~jawmap, 'neck')
 
 # ---- 4. body, ribbon, bun, back hair --------------------------------------------------
-claim(bodyz, 'body')
+claim(bodyz | (dilate(bodyz, 8) & (ublack | (teal & ~teal_light) | (v < 0.5)) & (np.arange(H)[:, None] > 2060)), 'body')
 claim(PM['ribbon'] & ~(lavender & (s < 0.2) & (v > 0.75)) & ~white, 'hair_ribbon_l')
 claim(PM['bun'], 'hair_bun_l')
 claim(fz & jawmap & (skin | brown), 'face')
