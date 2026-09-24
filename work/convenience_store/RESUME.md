@@ -1,0 +1,26 @@
+# 再開情報
+
+- **Job / 保存日時 / 実行者：** amrita-convenience-store-puppet-v1、2026-09-24、Claude Code（クラウドセッション）
+- **現在の状態：** 台帳上は `planned`（Affinity を使わない代替経路のため）。puppet 用の PNG 一式と manifest は納品済み。
+- **原本と承認根拠：** `source/convenience_store/base.png`（sha256 4dd74255…7e26c）。ユーザーが提供した本番用原画で、分割計画は会話で全て承認済み。
+  - 差分：`eyes_closed.png`（f72840e3…f521）、`mouth_open.png`（59b88de2…a587af754）
+- **差分のずれ：** 2枚とも全体が描き直されている。目閉じは右へ +0.94px・下へ +0.58px、口開きは右へ +0.93px・下へ +0.25px ずれている（`stage/alignment.json`）。目と口の範囲だけ、1px以下の単位で位置を合わせて使った。
+- **最新の出力：** `costumes/convenience_store/manifest.json`（sha256 は各項目に記載）
+- **plan.json：** `work/convenience_store/plan.json`。`validate_plan.py --check-files` に合格（`plan_check_v001.json`）。
+- **検査の証拠：**
+  - `qa/convenience_store/recomposite_stats.json`：既定の状態の再合成と原画の差は平均 0.09/255。24 を超えて違う画素は 43px（眉の細部）。
+  - `poses_overview.png`：動かしたときの見え方。
+  - `parts_contact_sheet.png`：パーツの一覧。
+- **完了したパーツ：** 全30パーツ（manifest を参照）。
+- **保留したパーツ：** なし。
+- **API候補の結果：** 送信していない（外部 API は使っていない）。
+- **既知の問題（軽微）：**
+  1. 画像左の横髪が白いシャツ・水色の肩の上で半透明になっている部分で、細い髪の断片が胴体側に少し残っている。髪を大きく揺らすと、肩の上に白い短い線として見える。
+  2. 画像右の横髪の、黒い制服に重なる濃い輪郭線の一部が胴体側に残っている。
+  3. 閉じ目のまぶた上に、差分の絵から来た小さな青い点が1〜2個ある。
+  4. 横髪の付け根は、なぞった範囲で切っている。後ろ髪を描き足してあるので穴は開かない。
+  5. 描き足しは周りの画素を補間した平坦な塗り。髪の筋や細かい陰影までは再現していない。
+- **未検証：** puppet 上での実際の動き（メッシュ変形・物理）。Affinity のネイティブ正本は作っていない。
+- **次にやること：** puppet に `costumes/convenience_store/manifest.json` を読み込み、各パラメータの端で見え方を確認する。
+
+再開するときは、対象ファイル・ハッシュ・使える道具・書き込み担当を確認し直すこと。

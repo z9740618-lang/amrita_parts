@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "scope": "plan_contract_and_optional_file_references",
+  "stage": "planned",
+  "errors": [],
+  "files_checked": true,
+  "visual_claims_independently_verified": false,
+  "native_import_independently_verified": false,
+  "note": "Evidence file existence/hash is checked only with --check-files; actual visual/GUI actions must be observed by the executor."
+}

@@ -1,0 +1,4 @@
+work/convenience_store/stage/*
+!work/convenience_store/stage/alignment.json
+__pycache__/
+*.pyc
