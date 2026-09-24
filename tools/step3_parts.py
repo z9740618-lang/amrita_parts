@@ -90,7 +90,7 @@ S = np.zeros((H, W, 3)); S[fy0:fy1, fx0:fx1] = est
 dev = np.abs(c[..., :3].astype(np.float64) - S).max(-1)
 front = ['eyelash_upper_r', 'eyelash_upper_l', 'eyelash_lower_r', 'eyelash_lower_l', 'eye_white_r', 'eye_white_l',
          'hair_front', 'hair_side_r', 'hair_side_l']
-eye_zone = dilate(PM['eye_r_E'] | PM['eye_l_E'], 4)
+eye_zone = dilate(PM['eye_r_E'] | PM['eye_l_E'], 24)
 moved = np.zeros((H, W), bool)
 for n in front:
     F = lab == PARTS.index(n)

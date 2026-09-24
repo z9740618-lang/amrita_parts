@@ -133,7 +133,7 @@ claim(PM['hair_front'] & ~skin & ~brown, 'hair_front')
 # inside the eye outlines the front hair keeps only real strand tips (connected to hair outside
 # the eyes); loose rim/highlight pixels of the eye drawing go back to the lashes
 for side in ('r', 'l'):
-    Ez = dilate(PM[f'eye_{side}_E'], 4)
+    Ez = dilate(PM[f'eye_{side}_E'], 24)
     hf = lab == ID['hair_front']
     ys_, xs_ = np.nonzero(Ez)
     box = (ys_.min() - 30, ys_.max() + 30, xs_.min() - 30, xs_.max() + 30)
