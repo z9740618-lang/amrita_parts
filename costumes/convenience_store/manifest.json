@@ -10,11 +10,14 @@
   0
  ],
  "paths_relative_to": "repository root",
- "note": "order = draw order from the bottom (0 = bottom). All PNGs are full canvas, same origin, no crop. _r/_l = character right/left (_r is on the image left). default_opacity 0 = alternate state (closed eyes, open mouth set, blush). clip = draw only inside that part's alpha.",
+ "note": "order = draw order from the bottom (0 = bottom). All PNGs are full canvas, same origin, no crop. _r/_l = character right/left (_r is on the image left). default_opacity 0 = alternate state (closed eyes, open mouth set, blush). clip = draw only inside that part's alpha. from = expression variant the part was taken from (the variants are redrawn at another scale; see work/convenience_store/expression_alignment.json). from = expression variant the part was taken from (the variants are redrawn at another scale; see work/convenience_store/expression_alignment.json).",
  "source": {
   "base": "source/convenience_store/base.png",
   "eyes_closed": "source/convenience_store/eyes_closed.png",
-  "mouth_open": "source/convenience_store/mouth_open.png"
+  "mouth_open": "source/convenience_store/mouth_open.png",
+  "angry": "source/convenience_store/angry.png",
+  "smile": "source/convenience_store/smile.png",
+  "sleepy": "source/convenience_store/sleepy.png"
  },
  "parts": [
   {
@@ -117,27 +120,91 @@
   },
   {
    "order": 14,
+   "id": "mouth_angry_inner",
+   "file": "shared/face/mouth_angry_inner.png",
+   "default_opacity": 0,
+   "from": "angry",
+   "sha256": "f101e9840fedd8122ecf228d09d092f2ed3c1b94d9ff4b3523881fe2dc1f7940"
+  },
+  {
+   "order": 15,
+   "id": "mouth_angry_teeth",
+   "file": "shared/face/mouth_angry_teeth.png",
+   "default_opacity": 0,
+   "from": "angry",
+   "sha256": "a4919cd9725722f04879f6865b119342edc7492b1a7beb4e6fc5bf75381c7edf"
+  },
+  {
+   "order": 16,
+   "id": "mouth_angry_lower",
+   "file": "shared/face/mouth_angry_lower.png",
+   "default_opacity": 0,
+   "from": "angry",
+   "sha256": "c4c2c4d7c5e4e72e953651c66ac2ee27e156bb678f2e1aa6ffb94552ba38b492"
+  },
+  {
+   "order": 17,
+   "id": "mouth_angry_upper",
+   "file": "shared/face/mouth_angry_upper.png",
+   "default_opacity": 0,
+   "from": "angry",
+   "sha256": "51fab65da11c6dbdf240a39251830eec40450b7e55d572dd23b97f415efccc32"
+  },
+  {
+   "order": 18,
+   "id": "mouth_smile_inner",
+   "file": "shared/face/mouth_smile_inner.png",
+   "default_opacity": 0,
+   "from": "smile",
+   "sha256": "6769728ca13b0175d75eec68dc0dae33c75d82e940659c627286c51b33154c04"
+  },
+  {
+   "order": 19,
+   "id": "mouth_smile_teeth",
+   "file": "shared/face/mouth_smile_teeth.png",
+   "default_opacity": 0,
+   "from": "smile",
+   "sha256": "98ef52c8ef23a44db46798107ed3e3ece8b219a4b2589538a1de78672c26da7b"
+  },
+  {
+   "order": 20,
+   "id": "mouth_smile_lower",
+   "file": "shared/face/mouth_smile_lower.png",
+   "default_opacity": 0,
+   "from": "smile",
+   "sha256": "ba73d10184ab4baa2929448fe764adadb9f5c2068d65626b787d97a7edd020e9"
+  },
+  {
+   "order": 21,
+   "id": "mouth_smile_upper",
+   "file": "shared/face/mouth_smile_upper.png",
+   "default_opacity": 0,
+   "from": "smile",
+   "sha256": "247a792f38f2a29314b7b85cdbeec22b696a04ee634e1315807189b202dc3204"
+  },
+  {
+   "order": 22,
    "id": "mouth_closed",
    "file": "shared/face/mouth_closed.png",
    "default_opacity": 1,
    "sha256": "9b2c99cc8337d69754e3175768248d820d6ab7632d40d9098168b41c7a76c7a2"
   },
   {
-   "order": 15,
+   "order": 23,
    "id": "eye_white_r",
    "file": "costumes/convenience_store/eye_white_r.png",
    "default_opacity": 1,
    "sha256": "611d4c504f7db69968a44934daad377eb17ad1767d054ecdaf0212a5b9482047"
   },
   {
-   "order": 16,
+   "order": 24,
    "id": "eye_white_l",
    "file": "costumes/convenience_store/eye_white_l.png",
    "default_opacity": 1,
    "sha256": "b3f9ada31c1df6921b271dc1d74f259f52634c45e4c859bfc92cab3caf1ebc60"
   },
   {
-   "order": 17,
+   "order": 25,
    "id": "iris_r",
    "file": "costumes/convenience_store/iris_r.png",
    "default_opacity": 1,
@@ -145,7 +212,7 @@
    "sha256": "dc8bb5761e363d09c044d4bddfaf47763dec5e01f510c17f4b92b74f3d25fba3"
   },
   {
-   "order": 18,
+   "order": 26,
    "id": "iris_l",
    "file": "costumes/convenience_store/iris_l.png",
    "default_opacity": 1,
@@ -153,81 +220,113 @@
    "sha256": "33d86da1ea5ebf7366d9fa232f022f365b0c16786b04fefe942bdec87cea509f"
   },
   {
-   "order": 19,
+   "order": 27,
    "id": "eyelash_lower_r",
    "file": "costumes/convenience_store/eyelash_lower_r.png",
    "default_opacity": 1,
    "sha256": "03fbcceb65da343adcac2a007eeabdc05ed7a65f2f58e45b05c9b75bf28ac3b5"
   },
   {
-   "order": 20,
+   "order": 28,
    "id": "eyelash_lower_l",
    "file": "costumes/convenience_store/eyelash_lower_l.png",
    "default_opacity": 1,
    "sha256": "21f3bda51b7c153b2012e8d59bd9a1ea6f3005ced20cd326aac7ba3f660f1c28"
   },
   {
-   "order": 21,
+   "order": 29,
    "id": "eyelash_upper_r",
    "file": "costumes/convenience_store/eyelash_upper_r.png",
    "default_opacity": 1,
    "sha256": "2d553b30fe94d3dbee76267fc0d4d198905ccb50bce242f9ac268c623d8960b9"
   },
   {
-   "order": 22,
+   "order": 30,
    "id": "eyelash_upper_l",
    "file": "costumes/convenience_store/eyelash_upper_l.png",
    "default_opacity": 1,
    "sha256": "8d9ac091747e0186bbd1b28b0a5f6ae2f3d79d0e277a7c4cd96f93978973fb95"
   },
   {
-   "order": 23,
+   "order": 31,
+   "id": "eyelid_half_r",
+   "file": "costumes/convenience_store/eyelid_half_r.png",
+   "default_opacity": 0,
+   "from": "sleepy",
+   "sha256": "e14ab0e74de065743f8c2ae1f8e1adae732705853ee69985b5873a94fa8f7a07"
+  },
+  {
+   "order": 32,
+   "id": "eyelid_half_l",
+   "file": "costumes/convenience_store/eyelid_half_l.png",
+   "default_opacity": 0,
+   "from": "sleepy",
+   "sha256": "5cadde0c570bb635038d68d2b7700220c64a43fc416f6bacc0974efd87176530"
+  },
+  {
+   "order": 33,
    "id": "eye_closed_r",
    "file": "costumes/convenience_store/eye_closed_r.png",
    "default_opacity": 0,
    "sha256": "896de9326c7d804b1d1ffdd3fbdb9c1e26424dafb7e334c4ae7c19c032351ceb"
   },
   {
-   "order": 24,
+   "order": 34,
    "id": "eye_closed_l",
    "file": "costumes/convenience_store/eye_closed_l.png",
    "default_opacity": 0,
    "sha256": "801efa133c2056e5b2617b141d2e0ec978156c38f3c2be10c179d9f1b819fc24"
   },
   {
-   "order": 25,
+   "order": 35,
    "id": "hair_side_r",
    "file": "costumes/convenience_store/hair_side_r.png",
    "default_opacity": 1,
    "sha256": "ef3eddf97776450caaa14934640c5e043b29f7b535766c3a6f536b4266e3cca0"
   },
   {
-   "order": 26,
+   "order": 36,
    "id": "hair_side_l",
    "file": "costumes/convenience_store/hair_side_l.png",
    "default_opacity": 1,
    "sha256": "debda7c6d04a9a08ceeea875166ce6041fa698b73de1f8709f17cafe737c1694"
   },
   {
-   "order": 27,
+   "order": 37,
    "id": "hair_front",
    "file": "costumes/convenience_store/hair_front.png",
    "default_opacity": 1,
    "sha256": "8d49ac2373999ec2a83bf99bb28716069cb17062e3f65e53a1c277b36d02a3aa"
   },
   {
-   "order": 28,
+   "order": 38,
    "id": "brow_r",
    "file": "costumes/convenience_store/brow_r.png",
    "default_opacity": 1,
    "sha256": "ebccea8a5080fec3a5861d3b5fbced1c552c470f32dbfbf15e6d1fe0714a74eb"
   },
   {
-   "order": 29,
+   "order": 39,
    "id": "brow_l",
    "file": "costumes/convenience_store/brow_l.png",
    "default_opacity": 1,
    "sha256": "46549e7ae9026af997157df25b1645af7f7ddb8607336b9f85ef8180cf60d431"
+  },
+  {
+   "order": 40,
+   "id": "brow_front_r",
+   "file": "costumes/convenience_store/brow_front_r.png",
+   "default_opacity": 0,
+   "from": "angry",
+   "sha256": "c13b8b6f8cd457f415721214f39a88efafaad312c1d78e261e7d12192a0e1f7b"
+  },
+  {
+   "order": 41,
+   "id": "brow_front_l",
+   "file": "costumes/convenience_store/brow_front_l.png",
+   "default_opacity": 0,
+   "from": "angry",
+   "sha256": "3e954d5d1112e5cc3e0c79a4bd5ea5bc874c39aa491a1d3ed0a87d051ec1e269"
   }
  ]
 }

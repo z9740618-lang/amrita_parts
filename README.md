@@ -5,7 +5,7 @@
 ## 構成
 | パス | 中身 |
 |---|---|
-| `source/convenience_store/` | 原画（基本の絵・目閉じ差分・口開き差分）。3840×3840。加工していない |
+| `source/convenience_store/` | 原画（基本の絵・目閉じ差分・口開き差分・表情差分 angry / smile / sleepy）。3840×3840。加工していない。表情差分は胸から上を約1.67〜1.70倍で描き直した別構図 |
 | `shared/face/` | **衣装と共有するパーツ**：顔の肌と輪郭、耳、鼻、口（閉じ口、開き口の上唇・下唇・口の中）、首、頬の赤み |
 | `costumes/convenience_store/` | コンビニ制服専用のパーツ（目・眉・髪・髪飾り・胴体）と `manifest.json` |
 | `qa/convenience_store/` | 検査用の画像（再合成の差分、動かしたときの見え方、パーツ一覧） |
@@ -19,6 +19,7 @@
 - `default_opacity: 0` は、初期状態では表示しない別状態のパーツ。閉じ目、開き口の3枚、頬の赤みが該当する。既定の状態は原画と同じ見た目になる。
 - `clip`：そのパーツは指定したパーツの不透明な範囲の中だけに描く（瞳 → 白目）。
 - `sha256` は各 PNG のハッシュ。
+- `from`：表情差分から取ったパーツの元の差分（angry / smile / sleepy）。差分と基本の絵の対応は `work/convenience_store/expression_alignment.json`。
 
 ## 作り直し
 ```
@@ -31,4 +32,7 @@ python tools/step5_blush.py       # 頬の赤み（新しく描いたもの）
 python tools/step6_assemble.py    # 納品用フォルダと manifest を書き出し、再合成を検査する
 python tools/qa_sim.py            # 動かしたときの見え方の検査画像を作る
 python tools/write_plan.py        # plan.json を更新する
+python tools/step7_fixes.py       # puppet からの修正依頼 1〜6 を反映（manifest と再合成の検査も更新）
+python tools/step8_expressions.py # 表情差分（怒り・笑顔・眠そう）から眉・口・上まぶたを取る
+python tools/qa_expressions.py    # 表情パーツの検査画像
 ```
