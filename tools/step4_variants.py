@@ -84,7 +84,7 @@ hair_ids = [PARTS.index(n) for n in ('hair_front', 'hair_side_r', 'hair_side_l')
 hair = np.isin(lab, hair_ids)
 for sd in ('r', 'l'):
     E = poly_mask([polys[f'eye_{sd}_E']])
-    region = dilate(E, 14) & ~dilate(hair, 1)
+    region = dilate(E, 14) & ~dilate(hair, 4)
     ys, xs = np.nonzero(region)
     y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
     var = aligned_crop('eyes_closed.png', 'eyes_closed', y0, y1, x0, x1)
@@ -99,6 +99,11 @@ for sd in ('r', 'l'):
     feather = np.where(inner, 1.0, np.where(dist > 0, 1 - dist / 13.0, 0.0))
     Pv = var[..., :3]
     hairish = ((Pv[..., 2] > Pv[..., 0] + 4) & (Pv.max(-1) > 150)) | ((np.ptp(Pv, -1) < 14) & (Pv.min(-1) > 225))
+    # dark navy/black hair outlines of the redraw near the hair edge (lash ink is brown-black and inside)
+    navy = (Pv[..., 2] > Pv[..., 0] + 10) & (Pv.max(-1) < 150)
+    hairish |= navy & ~dilate(E, 2)[y0:y1, x0:x1]
+    hairish |= dilate(hair, 10)[y0:y1, x0:x1] & ~dilate(E, 2)[y0:y1, x0:x1] & (Pv.max(-1) < 170)
+    hairish |= ~dilate(E, 3)[y0:y1, x0:x1] & (Pv.max(-1) < 120)   # lid skin/creases are never this dark
     fa = feather[y0:y1, x0:x1] * (region[y0:y1, x0:x1] | inner[y0:y1, x0:x1]) * ~hairish * (var[..., 3] / 255.0)
     lay = np.zeros((H, W, 4), np.uint8)
     lay[y0:y1, x0:x1, :3] = np.clip(np.round(Pv), 0, 255).astype(np.uint8)

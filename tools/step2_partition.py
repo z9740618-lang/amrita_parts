@@ -255,6 +255,103 @@ sk = (lab == ID['hair_back']) & near_face & (skin | brown | (pinkish & (s > 0.15
 lab[sk] = ID['face']
 print('hair_back skin -> face:', int(sk.sum()))
 
+# ---- audit cleanup --------------------------------------------------------------------------
+blueness = b - r
+lavender_hair = (h >= 200) & (h <= 290) & (s < 0.35) & (v > 0.55)
+yy_ = np.arange(H)[:, None]
+# (a) shoulder / collar outline and teal piping inside the side hair belong to the uniform
+for sd in ('r', 'l'):
+    sh = lab == ID[f'hair_side_{sd}']
+    uni = sh & (yy_ > 1950) & dilate(bodyz, 16) & ((teal & ~teal_light) | ((v < 0.45) & (blueness < 35)))
+    lab[uni] = ID['body']
+    print(f'hair_side_{sd} uniform outline -> body:', int(uni.sum()))
+# (b) skin / face-contour fragments inside hair parts next to the face or ears
+for hp in ('hair_side_r', 'hair_side_l', 'hair_bun_l', 'hair_front'):
+    hm = lab == ID[hp]
+    for tgt in ('ear_r', 'ear_l', 'face'):
+        near = dilate(lab == ID[tgt], 6)
+        sk = hm & near & (skin | brown | (pinkish & (s > 0.15)))
+        lab[sk] = ID[tgt]
+        hm &= ~sk
+# (c) the bun's traced left edge overlaps the side lock and the ear: the strip left of the lock's
+# right edge (x < 2448, above the shoulders) is side hair, or ear where it is skin / ear outline
+bun = lab == ID['hair_bun_l']
+xx_ = np.arange(W)[None, :]
+strip = bun & (xx_ < 2448) & (yy_ < 1640)
+earpx = strip & (skin | brown | pinkish | ((v < 0.45) & (blueness < 35))) & dilate(lab == ID['ear_l'], 14)
+lab[earpx] = ID['ear_l']
+lab[strip & ~earpx] = ID['hair_side_l']
+# skin / contour fragments in any hair part inside the face outline area belong to the face
+for hp in ('hair_side_r', 'hair_side_l', 'hair_front'):
+    fr = (lab == ID[hp]) & dilate(PM['face_zone'], 30) & (skin | brown) & ~dilate(lab == ID['ear_l'], 6) & ~dilate(lab == ID['ear_r'], 6)
+    lab[fr] = ID['face']
+# (d) hair strands inside the ribbon outline
+rib = lab == ID['hair_ribbon_l']
+strand = rib & ~teal & (v >= 0.42)
+lab[strand & dilate(lab == ID['hair_side_l'], 8)] = ID['hair_side_l']
+lab[strand & ~dilate(lab == ID['hair_side_l'], 8)] = ID['hair_back']
+# (e) jaw outline pixels that ended up in the neck belong to the face
+jawline = (lab == ID['neck']) & brown & dilate(lab == ID['face'], 4)
+lab[jawline] = ID['face']
+# (f) tiny detached specks (< 80 px) go to the part that surrounds them
+def relabel_specks(min_px=80):
+    moved = 0
+    for pid in range(1, len(PARTS)):
+        m = lab == pid
+        if not m.any():
+            continue
+        ys, xs = np.nonzero(m)
+        y0, y1, x0, x1 = ys.min(), ys.max() + 1, xs.min(), xs.max() + 1
+        sub = m[y0:y1, x0:x1]
+        comp = np.zeros(sub.shape, np.int32)
+        n = 0
+        sizes = [0]
+        for sy, sx in zip(*np.nonzero(sub)):
+            if comp[sy, sx]:
+                continue
+            n += 1
+            st = [(sy, sx)]; comp[sy, sx] = n; cnt = 0
+            while st:
+                cy, cx = st.pop(); cnt += 1
+                for dy in (-1, 0, 1):
+                    for dx in (-1, 0, 1):
+                        ny, nx = cy + dy, cx + dx
+                        if 0 <= ny < sub.shape[0] and 0 <= nx < sub.shape[1] and sub[ny, nx] and not comp[ny, nx]:
+                            comp[ny, nx] = n; st.append((ny, nx))
+            sizes.append(cnt)
+        sizes = np.array(sizes)
+        small = (sizes < min_px) & (np.arange(len(sizes)) > 0)
+        if not small.any():
+            continue
+        sm = np.zeros_like(m)
+        sm[y0:y1, x0:x1] = small[comp]
+        ring = dilate(sm, 2) & ~sm & (lab != pid) & (lab != 0)
+        if not ring.any():
+            continue
+        # majority neighbour label per speck region (approx: global majority around all specks of this part)
+        ys2, xs2 = np.nonzero(sm)
+        for (yy2, xx2) in zip(ys2, xs2):
+            win = lab[max(yy2 - 3, 0):yy2 + 4, max(xx2 - 3, 0):xx2 + 4]
+            vals = win[(win != pid) & (win != 0)]
+            if len(vals):
+                lab[yy2, xx2] = np.bincount(vals).argmax()
+                moved += 1
+    return moved
+print('specks relabelled:', relabel_specks())
+# re-apply after the speck pass: bun strip left of the side lock, ear-edge fragments in the side lock
+bun = lab == ID['hair_bun_l']
+ear_shape = erode(dilate(lab == ID['ear_l'], 6), 6)
+ear_shape = fill_holes(ear_shape)
+inear = bun & ear_shape                       # ear highlights (white) inside the ear outline
+lab[inear] = ID['ear_l']
+strip = (lab == ID['hair_bun_l']) & (xx_ < 2460) & (yy_ < 1640) & ~dilate(ear_shape, 1)
+lab[strip] = ID['hair_side_l']
+print('bun: ear highlights -> ear_l:', int(inear.sum()), ' side-lock edge -> hair_side_l:', int(strip.sum()))
+sl = lab == ID['hair_side_l']
+earfrag = sl & dilate(lab == ID['ear_l'], 20) & (skin | brown | pinkish | ((v < 0.45) & (blueness < 35)))
+lab[earfrag] = ID['ear_l']
+print('bun strip -> side/ear:', int(strip.sum()), ' side_l ear fragments -> ear_l:', int(earfrag.sum()))
+
 Image.fromarray(lab).save(WORK / 'stage/labels.png')
 (WORK / 'stage/labels.json').write_text(json.dumps({'parts': PARTS, 'jaw': jaw.tolist()}, indent=0))
 print({n: int((lab == i).sum()) for n, i in ID.items()})

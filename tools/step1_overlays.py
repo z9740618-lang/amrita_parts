@@ -57,32 +57,63 @@ for name, cfg in BROWS.items():
     for i, x in enumerate(range(x0, x1)):
         yc = int(round(c[i]))
         prof[i] = al[yc - hw:yc + hw + 1, x]
+        gapcol = line[yc - hw:yc + hw + 1, x]
+        prof[i][gapcol] = np.nan
+    # where a hair outline crosses, the brow continues underneath: interpolate along the stroke
+    xi = np.arange(len(prof))
+    for j in range(prof.shape[1]):
+        col = prof[:, j]
+        ok = ~np.isnan(col)
+        if ok.sum() >= 2:
+            prof[:, j] = np.interp(xi, xi[ok], col[ok])
+        else:
+            prof[:, j] = 0
     k = 4
     padp = np.pad(prof, ((k, k), (0, 0)), mode='edge')
     med = np.median(np.stack([padp[j:j + len(prof)] for j in range(2 * k + 1)]), 0)
     med = np.where(med < 0.07, 0, med)
+    # one continuous stroke: a single cross-section (median over the whole brow) scaled per column
+    # by the local stroke strength (smoothed, clamped so gaps over strand highlights are bridged)
+    core = med[:, hw - 3:hw + 4].sum(1)
+    xsec = np.median(med[core > np.percentile(core, 40)], 0)
+    xsec = xsec / max(xsec.max(), 1e-6)
+    strength = med.max(1)
+    kk = 15
+    sp = np.pad(strength, kk, mode='edge')
+    smooth = np.array([np.percentile(sp[i:i + 2 * kk + 1], 75) for i in range(len(strength))])
+    peak = np.percentile(smooth, 90)
+    smooth = np.clip(smooth, 0.6 * peak, peak)
+    # measured stroke where it is clearly drawn; the uniform cross-section bridges the gaps
+    # (strand highlights and outlines where the background estimate fails)
+    gapcols = strength < 0.6 * peak
+    prof2 = med.copy()
+    prof2[gapcols] = np.maximum(med[gapcols], xsec[None, :] * smooth[gapcols][:, None])
     al = np.zeros(a.shape[:2])
     for i, x in enumerate(range(x0, x1)):
         yc = int(round(c[i]))
-        al[yc - hw:yc + hw + 1, x] = med[i]
-    # soft taper over the last 12 px of both ends
-    for i, x in enumerate(range(x0, x1)):
-        t = min(i, x1 - 1 - x0 - i) / 6.0
+        al[yc - hw:yc + hw + 1, x] = prof2[i]
+    for i, x in enumerate(range(x0, x1)):          # soft taper at both ends
+        t = min(i, x1 - 1 - x0 - i) / 8.0
         if t < 1:
             al[:, x] *= t
-    # remove the brow from the art (background estimate), then colour the brow so that
-    # brow-over-clean reproduces the original exactly wherever the stroke is dense enough
+    al = np.where(al < 0.05, 0, al)
+    # art underneath = background estimate; brow colour reproduces the original where the stroke
+    # is dense, flat ink elsewhere (clipped, so strand outlines never tint the brow)
     m = (band & ~line) | (al > 0)
     clean[m, :3] = np.round(np.clip(Bimg[m], 0, 255)).astype(np.uint8)
     Bq = clean[..., :3].astype(np.float64)
     exact = Bq + (P - Bq) / np.maximum(al, 1e-6)[..., None]
-    col = np.where((al >= 0.12)[..., None], exact, ink[None, None, :])
+    ok = (al >= 0.15) & ~line & (np.abs(exact - ink).max(-1) < 130)
+    # where a hair highlight shows through, the brow is transparent and the art keeps the original
+    bright = (al > 0) & (exact.mean(-1) >= ink.mean() + 25)
+    al = np.where(bright, 0, al)
+    clean[bright, :3] = a[bright, :3]
+    col = np.where(ok[..., None], exact, ink[None, None, :])
     layer = np.zeros_like(a)
     layer[..., :3] = np.clip(np.round(col), 0, 255).astype(np.uint8)
     layer[..., 3] = np.round(al * a[..., 3]).astype(np.uint8)
     layer[layer[..., 3] == 0] = 0
     parts[name] = layer
-    # pixels the brow cannot reproduce (stroke too faint) keep the original colour in the art
     faint = band & ~line & (al < 0.12) & (np.abs(P - Bq).max(-1) > 10)
     clean[faint, :3] = a[faint, :3]
 

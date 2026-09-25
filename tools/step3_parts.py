@@ -193,6 +193,7 @@ for sd in ('r', 'l'):
     cx, cy = -c1 / (2 * a2), -d1 / (2 * b2)
     k = 1 + a2 * cx ** 2 + b2 * cy ** 2
     rx, ry = np.sqrt(k / a2), np.sqrt(k / b2)
+    ry = max(ry, 0.95 * rx)          # the iris is round; a flat fit (few top edge samples) would cut it
     print(f'iris_{sd} ellipse', round(cx, 1), round(cy, 1), round(rx, 1), round(ry, 1))
     rr = np.sqrt(((xx - cx) / rx) ** 2 + ((yy - cy) / ry) ** 2)
     # the iris outline inside the opening was partly taken as lash (dark navy): give it back
