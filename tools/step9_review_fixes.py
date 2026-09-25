@@ -494,10 +494,37 @@ def fixB2():
     print(f'B2: face skin continued under the lock {int(fill.sum())} px (black band {int(black.sum())} px)')
 
 
+
+# ---------------------------------------------------------------- Issue #9: temple
+def fixT():
+    """Above the temple the face stuck out past the right edge of the front hair (x 2300-2320, y 955-1250),
+    hidden by the side lock at rest but seen as a thin pink line between front hair and lock when the lock
+    swings. Face pixels right of the front hair's edge (and not visible in the art) are removed there, down
+    to where the skin legitimately continues to the ear (upper boundary of the B2 continuation)."""
+    face, hf = part('face'), part('hair_front')
+    touch('face')
+    own = owner_map()
+    ytop = np.interp(XX, [2300, 2340, 2380, 2420, 2445], [1235, 1262, 1292, 1325, 1350], left=1235, right=1350)
+    cut = np.zeros((H, W), bool)
+    for y in range(900, 1360):
+        xr = np.nonzero(hf[y, 2200:2400, 3] > 0)[0]
+        if not len(xr):
+            continue
+        # right edge of the front hair's main body in this row (last covered pixel of the run from 2200)
+        row = hf[y, 2200:2400, 3] > 0
+        e = 2200 + xr.max()
+        cut[y, e + 1:2460] = True
+    cut &= box(2240, 900, 2460, 1360) & (YY < ytop - 2) & (face[..., 3] > 0) & (own != 'face')
+    face[cut] = 0
+    print(f'T: face pixels right of the front hair removed {int(cut.sum())} px')
+
+
 if __name__ == '__main__':
     which = sys.argv[1:] or ['A', 'B', 'C', 'D', 'E', 'manifest']
     if 'B2' in which:
         fixB2()
+    if 'T' in which:
+        fixT()
     for k in 'ABCDE':
         if k in which:
             globals()['fix' + k]()
