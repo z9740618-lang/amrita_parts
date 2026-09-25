@@ -22,21 +22,21 @@
    "id": "hair_back",
    "file": "costumes/convenience_store/hair_back.png",
    "default_opacity": 1,
-   "sha256": "01bc418ce4877e741c41b030842a0fa646be9fe5b3151487adaf6779c00c0b16"
+   "sha256": "ad77c0d03a7236613fa9158edcd320e33cf814d4266884e83732d65e393d6ad9"
   },
   {
    "order": 1,
    "id": "hair_bun_l",
    "file": "costumes/convenience_store/hair_bun_l.png",
    "default_opacity": 1,
-   "sha256": "9127e45547078e49ae0bb0bff8024af9e17051ea154b82d8111ca5be6903a7b0"
+   "sha256": "ef8ef58c711f25dea73118763f3f2637b458695777d1e9b8ab1ae96abe7b67bb"
   },
   {
    "order": 2,
    "id": "hair_ribbon_l",
    "file": "costumes/convenience_store/hair_ribbon_l.png",
    "default_opacity": 1,
-   "sha256": "bb9e6d76b21d81dfca2a7301f9c8d0608ca3b170c0faa2c772a631c2f49f2fdd"
+   "sha256": "33006b136fc712d45076e55741a08d444b5d4f7f86533a91569dd321e1359269"
   },
   {
    "order": 3,
@@ -50,7 +50,7 @@
    "id": "body",
    "file": "costumes/convenience_store/body.png",
    "default_opacity": 1,
-   "sha256": "e6b9795fd9f01cf311a7e89d85362b2f0d96735dfa8c97fdb7d53f6e4d2e8512"
+   "sha256": "09a563628e4ad74b7aa70d38d717a67daa41bfb90b3877fcebee6b01baea0bbf"
   },
   {
    "order": 5,
@@ -71,7 +71,7 @@
    "id": "face",
    "file": "shared/face/face.png",
    "default_opacity": 1,
-   "sha256": "b86f2f2e237f9d8c6022629d41671e8ec42f6d99e50e4c7e38a4064da4c7d487"
+   "sha256": "c26cb4e38ed72c291248df4a66b954669195e359377089d2c12b737db997cb5e"
   },
   {
    "order": 8,
@@ -127,14 +127,14 @@
    "id": "eye_white_r",
    "file": "costumes/convenience_store/eye_white_r.png",
    "default_opacity": 1,
-   "sha256": "077a69dfcea18eaf113c3c0878070a185a9685767abe36bef3571f3f758b3734"
+   "sha256": "611d4c504f7db69968a44934daad377eb17ad1767d054ecdaf0212a5b9482047"
   },
   {
    "order": 16,
    "id": "eye_white_l",
    "file": "costumes/convenience_store/eye_white_l.png",
    "default_opacity": 1,
-   "sha256": "4248465d7bd362d052834d6c2a00c3c6a1c1e954acb17fa26e4df821235db6dc"
+   "sha256": "b3f9ada31c1df6921b271dc1d74f259f52634c45e4c859bfc92cab3caf1ebc60"
   },
   {
    "order": 17,
@@ -142,7 +142,7 @@
    "file": "costumes/convenience_store/iris_r.png",
    "default_opacity": 1,
    "clip": "eye_white_r",
-   "sha256": "5cdb686d005d82525f6bd652be795f025e1b3c4954cb1ff53c5239cd7834fc1c"
+   "sha256": "dc8bb5761e363d09c044d4bddfaf47763dec5e01f510c17f4b92b74f3d25fba3"
   },
   {
    "order": 18,
@@ -150,7 +150,7 @@
    "file": "costumes/convenience_store/iris_l.png",
    "default_opacity": 1,
    "clip": "eye_white_l",
-   "sha256": "ea8096398ed386366a752faeb1e65b2e7551f74103399036ccc829904428a771"
+   "sha256": "33d86da1ea5ebf7366d9fa232f022f365b0c16786b04fefe942bdec87cea509f"
   },
   {
    "order": 19,
@@ -171,14 +171,14 @@
    "id": "eyelash_upper_r",
    "file": "costumes/convenience_store/eyelash_upper_r.png",
    "default_opacity": 1,
-   "sha256": "49ec628d3beafe145e1bdc5d87d093a6ad7d5603e4d0fed62f20804de14e78d9"
+   "sha256": "2d553b30fe94d3dbee76267fc0d4d198905ccb50bce242f9ac268c623d8960b9"
   },
   {
    "order": 22,
    "id": "eyelash_upper_l",
    "file": "costumes/convenience_store/eyelash_upper_l.png",
    "default_opacity": 1,
-   "sha256": "0a4f3cfcc12a31b78639488f18b48adbfb8f232614248643998e3d023019bfbe"
+   "sha256": "8d9ac091747e0186bbd1b28b0a5f6ae2f3d79d0e277a7c4cd96f93978973fb95"
   },
   {
    "order": 23,
@@ -199,14 +199,14 @@
    "id": "hair_side_r",
    "file": "costumes/convenience_store/hair_side_r.png",
    "default_opacity": 1,
-   "sha256": "9c60288e870cc431ae5aef0717b7999f82c6dbac1bc580f0efddd27d2b43cd5c"
+   "sha256": "ef3eddf97776450caaa14934640c5e043b29f7b535766c3a6f536b4266e3cca0"
   },
   {
    "order": 26,
    "id": "hair_side_l",
    "file": "costumes/convenience_store/hair_side_l.png",
    "default_opacity": 1,
-   "sha256": "ca28bea97c11af31f7eb608589520dc96e51ecf5e5148ca97996d34a405f81f1"
+   "sha256": "debda7c6d04a9a08ceeea875166ce6041fa698b73de1f8709f17cafe737c1694"
   },
   {
    "order": 27,
