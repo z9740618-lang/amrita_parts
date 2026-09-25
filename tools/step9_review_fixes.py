@@ -426,8 +426,78 @@ def fixE():
     print(f'E: lock outline body -> lock {int(outline.sum())} px, thin strand -> lock {int(strand.sum())} px, uniform under the lock repainted {int(u.sum())} px')
 
 
+
+# ---------------------------------------------------------------- B, round 2 (Issue #3)
+def fixB2():
+    """The face under the left lock ended in a straight vertical edge (x ~2333-2342) with a black band along
+    it (the cheek outline drawn in round 1 over transparent pixels). The skin now continues under the lock
+    to the ear (hidden pixels only, ear not covered), from the visible skin around, and ends below in a
+    soft curve from the ear's lower tip to the jaw corner - no outline, no straight edge."""
+    face, ear = part('face'), part('ear_l')
+    touch('face')
+    own = owner_map()
+    upper = upper_opaque_of('face')
+    # ear's left edge per row (fallback 2445)
+    ys = np.arange(1150, 1610)
+    ex = np.full(len(ys), 2445.0)
+    for i, y in enumerate(ys):
+        xr = np.nonzero(ear[y, 2380:2480, 3] > 128)[0]
+        if len(xr):
+            ex[i] = 2380 + xr[0]
+    ex = smooth1d(ex, 15)
+    exg = np.full(H, 2445.0); exg[1150:1610] = ex
+    # lower boundary: from the ear's lower tip (2442, 1522) curving down-left to the jaw corner (2328, 1600)
+    xs_c = np.array([2320, 2345, 2370, 2395, 2420, 2445])
+    yb_c = np.array([1602, 1594, 1582, 1566, 1546, 1524])
+    ybot = np.interp(XX, xs_c, yb_c, left=1610, right=1524)
+    # upper boundary: from the cheek contour (x 2300, y 1235) rising to the ear's top (2445, 1350) - the
+    # side of the face between cheek and ear; above it is hair
+    ytop = np.interp(XX, [2300, 2340, 2380, 2420, 2445], [1235, 1262, 1292, 1325, 1350], left=1235, right=1350)
+    region = box(2240, 1150, 2460, 1610) & (XX < exg[:, None] + 3) & (YY < ybot) & (YY > ytop)
+    black = box(2290, 1230, 2360, 1560) & (face[..., 3] > 0) & ((face[..., :3].astype(np.float64) @ np.array([0.3, 0.59, 0.11])) < 190) & (own != 'face')
+    fill = region & upper & (own != 'face') & ~((ear[..., 3] > 128) & (own == 'ear_l'))
+    fill &= (face[..., 3] < 250) | black
+    fill |= black
+    fh, fs_, fv = s7.hsv(face)
+    known = (face[..., 3] >= 250) & (fh < 40) & (fs_ > 0.06) & (fv > 0.82) & ~fill & box(2100, 1100, 2460, 1640)
+    known &= ~black
+    sl = (slice(1100, 1640), slice(2100, 2470))
+    f = harmonic(face[sl][..., :3].astype(np.float64), ~known[sl], iters=300)
+    m = fill[sl]
+    fsl = face[sl]
+    fsl[m, :3] = np.clip(np.round(f[m]), 0, 255).astype(np.uint8)
+    fsl[m, 3] = 253
+    # soft lower edge (6 px ramp above the curve) where the pixels are hidden
+    d = np.minimum(ybot - YY, (YY - ytop) / 2.0)
+    ramp = fill & (d < 6)
+    face[ramp, 3] = np.clip(np.round(253 * d[ramp] / 6.0), 0, 253).astype(np.uint8)
+    # above that, the temple under the hair ended in a vertical dark line (x ~2312-2322): skin, fading out
+    # over 8 px towards the hair instead of a hard dark edge
+    tb = box(2270, 1060, 2340, 1262) & (face[..., 3] > 0) & (own != 'face') & (YY <= ytop + 8)
+    dark = tb & ((face[..., :3].astype(np.float64) @ np.array([0.3, 0.59, 0.11])) < 190)
+    sl2 = (slice(1040, 1270), slice(2200, 2350))
+    kn2 = (face[sl2][..., 3] >= 250) & ~dilate(dark, 2)[sl2] & (s7.hsv(face)[2][sl2] > 0.8)
+    f2 = harmonic(face[sl2][..., :3].astype(np.float64), ~kn2, iters=200)
+    dsub = dark[sl2]
+    fs2 = face[sl2]
+    fs2[dsub, :3] = np.clip(np.round(f2[dsub]), 0, 255).astype(np.uint8)
+    for y in range(1060, 1250):
+        xr = np.nonzero((face[y, 2270:2345, 3] > 0))[0]
+        if not len(xr):
+            continue
+        xe = 2270 + xr.max()
+        for k in range(8):
+            x = xe - k
+            if own[y, x] != 'face':
+                face[y, x, 3] = int(int(face[y, x, 3]) * (k + 1) / 9.0)
+    print(f'B2: temple edge dark line repainted {int(dark.sum())} px')
+    print(f'B2: face skin continued under the lock {int(fill.sum())} px (black band {int(black.sum())} px)')
+
+
 if __name__ == '__main__':
     which = sys.argv[1:] or ['A', 'B', 'C', 'D', 'E', 'manifest']
+    if 'B2' in which:
+        fixB2()
     for k in 'ABCDE':
         if k in which:
             globals()['fix' + k]()
