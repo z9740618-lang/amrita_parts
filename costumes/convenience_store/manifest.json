@@ -25,7 +25,7 @@
    "id": "hair_back",
    "file": "costumes/convenience_store/hair_back.png",
    "default_opacity": 1,
-   "sha256": "ad77c0d03a7236613fa9158edcd320e33cf814d4266884e83732d65e393d6ad9"
+   "sha256": "adf20fa159db8c457fa2f0a7c5ab4c0a04e260a3fffd27c16ebb0b75dfc49b72"
   },
   {
    "order": 1,
@@ -53,7 +53,7 @@
    "id": "body",
    "file": "costumes/convenience_store/body.png",
    "default_opacity": 1,
-   "sha256": "09a563628e4ad74b7aa70d38d717a67daa41bfb90b3877fcebee6b01baea0bbf"
+   "sha256": "f2e70dda785cae84c27302ef30fe13eaf48c073076ed399f65918c9c5805188e"
   },
   {
    "order": 5,
@@ -74,7 +74,7 @@
    "id": "face",
    "file": "shared/face/face.png",
    "default_opacity": 1,
-   "sha256": "c26cb4e38ed72c291248df4a66b954669195e359377089d2c12b737db997cb5e"
+   "sha256": "2f1568774581f615cf844763fab54694b9facdb773692660c1ab424d15a32608"
   },
   {
    "order": 8,
@@ -282,35 +282,35 @@
    "id": "hair_side_r",
    "file": "costumes/convenience_store/hair_side_r.png",
    "default_opacity": 1,
-   "sha256": "ef3eddf97776450caaa14934640c5e043b29f7b535766c3a6f536b4266e3cca0"
+   "sha256": "98ac2ee0c695f47bd8f85298e26ef1f0bba2377b0e4a746e2ce95d43196ad074"
   },
   {
    "order": 36,
    "id": "hair_side_l",
    "file": "costumes/convenience_store/hair_side_l.png",
    "default_opacity": 1,
-   "sha256": "debda7c6d04a9a08ceeea875166ce6041fa698b73de1f8709f17cafe737c1694"
+   "sha256": "7d45ebb821eb062a09ca0cee77ca79ae5c407adc7119466d4951a2de403d8e70"
   },
   {
    "order": 37,
    "id": "hair_front",
    "file": "costumes/convenience_store/hair_front.png",
    "default_opacity": 1,
-   "sha256": "8d49ac2373999ec2a83bf99bb28716069cb17062e3f65e53a1c277b36d02a3aa"
+   "sha256": "d83dd03e8000c8254f8a2e5d3fb9b7ec55a4ea7639ceba2ab2940478d631ca2e"
   },
   {
    "order": 38,
    "id": "brow_r",
    "file": "costumes/convenience_store/brow_r.png",
    "default_opacity": 1,
-   "sha256": "ebccea8a5080fec3a5861d3b5fbced1c552c470f32dbfbf15e6d1fe0714a74eb"
+   "sha256": "5b48fd08761aa55f5d568cc8d5d7dce41187417b29b25a14c82d0d971c1bc45f"
   },
   {
    "order": 39,
    "id": "brow_l",
    "file": "costumes/convenience_store/brow_l.png",
    "default_opacity": 1,
-   "sha256": "46549e7ae9026af997157df25b1645af7f7ddb8607336b9f85ef8180cf60d431"
+   "sha256": "70a51353a96b4e41948c66b2ff89f46341dd8405a3f9634b32474625a7ad2265"
   },
   {
    "order": 40,

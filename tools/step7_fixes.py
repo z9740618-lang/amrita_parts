@@ -162,7 +162,7 @@ def strand_detail(s_coord, y, seed, amp=22.0, lines=True):
     return lum, line
 
 
-def paint_hair(dst, region, known, flow_s, seed, dark=(58, 66, 140), amp=22.0, fade_from=None):
+def paint_hair(dst, region, known, flow_s, seed, dark=(58, 66, 140), amp=22.0, fade_from=None, line_w=0.75):
     """Hidden-area hair: smooth colour joined to the hair around (harmonic from `known`), then real-looking
     strands on top (strand_detail along flow_s). No flat areas, no straight colour edges."""
     ys_, xs_ = np.nonzero(region | known)
@@ -177,7 +177,7 @@ def paint_hair(dst, region, known, flow_s, seed, dark=(58, 66, 140), amp=22.0, f
     if fade_from is not None:
         fade = np.clip(fade_from[y0:y1, x0:x1][yy, xx] / 8.0, 0, 1)
     col = f[yy, xx] + (lum * fade)[:, None]
-    lw = (line * fade * 0.75)[:, None]
+    lw = (line * fade * line_w)[:, None]
     col = col * (1 - lw) + np.array(dark, float) * lw
     sub[yy, xx, :3] = col
     sub[yy, xx, 3] = 253
