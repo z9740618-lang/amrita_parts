@@ -29,11 +29,14 @@ for _ in range(60):
     if nxt.sum() == cur.sum():
         break
     cur = nxt
-detached = box & a & ~cur
+detached = box & a & ~cur & (YY < 1688)          # the light speck above the lip
+# the white diagonal dashes just outside the right corner of the lip line (x 1956-1990): skin colour
+dash = a & (XX >= 1956) & (XX < 1990) & (YY >= 1688) & (YY < 1712) & (s < 0.35) & (v > 0.55)
+detached |= dash
 m[detached, :3] = face[detached, :3]
 # the light band and its whitish blur (top rows of the lip in the box): the lip's dark red, continued
 # upward from the dark red just below (vertical interpolation), alpha unchanged
-band = box & cur & (YY <= 1700) & ~((m[..., 3] >= 150) & red & (v < 0.45))
+band = box & a & (YY <= 1700) & ~((m[..., 3] >= 150) & red & (v < 0.45)) & ~detached
 sl = (slice(1660, 1730), slice(1840, 2010))
 known = (a & red & (v < 0.45) & (m[..., 3] >= 150) & ~band)[sl]
 f = harmonic(m[sl][..., :3].astype(np.float64), ~known, iters=300, aniso=(1.0, 0.15))
